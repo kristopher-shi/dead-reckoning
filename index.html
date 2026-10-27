@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dead Reckoning</title>
+  <meta name="description" content="Dead Reckoning, by Kristopher Shi, 2026. Best on a computer, with headphones.">
+  <link rel="icon" type="image/png" sizes="32x32" href="TemplateData/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="TemplateData/favicon-16.png">
+  <link rel="apple-touch-icon" href="TemplateData/apple-touch-icon.png">
+  <link rel="stylesheet" href="TemplateData/style.css">
+</head>
+<body class="loading">
+  <canvas id="unity-canvas" tabindex="-1"></canvas>
+
+  <!-- the plate: stands in for the game until the visitor enters -->
+  <div class="plate"></div>
+  <span class="card-title">Dead Reckoning</span>
+  <span class="card-year">2026</span>
+  <span class="card-by">by Kristopher Shi</span>
+  <div class="line"><i id="bar"></i><b id="pct">0%</b></div>
+  <div class="enter">Click to enter</div>
+  <div class="notes">Headphones &nbsp;·&nbsp; Mouse or trackpad &nbsp;·&nbsp; Keyboard</div>
+  <div class="notice" id="notice">
+    <p id="notice-text"></p>
+    <a href="#" id="notice-action" hidden></a>
+  </div>
+
+  <!-- the visitor let go of the mouse (Esc, or another tab) while the game still wants it -->
+  <div class="resume">
+    <div>
+      <span class="resume-go"><span class="intro-only">Click to continue</span><span class="restart-only">Click to restart</span><span class="sailing-only">Click to keep sailing</span></span>
+      <a href="#" class="resume-back sailing-only">Esc to end the sailing</a>
+    </div>
+  </div>
+
+  <button class="corner" id="fullscreen" aria-label="Fullscreen">
+    <span class="enter-fs">Fullscreen</span><span class="exit-fs">Exit fullscreen</span>
+    <svg class="enter-fs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    <svg class="exit-fs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
+  </button>
+
+  <noscript><p class="noscript">Dead Reckoning needs JavaScript.</p></noscript>
+
+  <script>
+    window.DRBuild = {
+      loaderUrl: "Build/695b712b361fc1e5df6c5ab316c8334e.loader.js",
+      config: {
+        arguments: [],
+        dataUrl: "Build/c420cea6488eee4ddbdecc33bfbfdf28.data.unityweb",
+        frameworkUrl: "Build/522ee73d1b784eddb08a9bfc907b03cc.framework.js.unityweb",
+        codeUrl: "Build/3e682bdbfd36486363d07f541caee6c0.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Kristopher Yizhen Shi",
+        productName: "Dead Reckoning",
+        productVersion: "0.1.0",
+      },
+    };
+  </script>
+  <script src="TemplateData/page.js"></script>
+</body>
+</html>

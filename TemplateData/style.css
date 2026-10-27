@@ -1,0 +1,105 @@
+/* Dead Reckoning: the page around the game (see page.js). */
+:root {
+  --sky-top: #eef0f0; --sky-mid: #d2d6d7; --cloud-base: #b9bfc1; --fog: #bcc1c2; --sea: #a9afb0; --sea-deep: #9fa5a6;
+  --ink: #ffffff; --ink-dim: rgba(255, 255, 255, .78);
+  --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --through: calc(50vh - 50px);   /* the middle of the title's letters; set exactly by page.js */
+  --dissolve: 1.4s;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--sea); }
+body { font-family: var(--font); font-weight: 300; color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+#unity-canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; background: var(--sea); outline: none; }
+
+/* ---- the plate: a painted overcast sea; its horizon is the line through the title ---- */
+.plate, .card-title, .card-by, .card-year, .line, .enter, .notes, .notice {
+  transition: opacity var(--dissolve) ease, visibility 0s linear 0s;
+}
+.plate { position: fixed; inset: 0;
+  background: linear-gradient(to bottom, var(--sky-top) 0, var(--sky-mid) 30vh, var(--cloud-base) calc(var(--through) - .4vh),
+                                         var(--fog) calc(var(--through) + .4vh), var(--sea) 75vh, var(--sea-deep) 100vh); }
+.plate::after { content: ""; position: absolute; inset: 0;
+  background: radial-gradient(60% 18vh at 30% 14vh, rgba(255, 255, 255, .6), transparent 70%),
+              radial-gradient(45% 14vh at 72% 8vh, rgba(255, 255, 255, .55), transparent 70%),
+              radial-gradient(80% 9vh at 50% calc(var(--through) - 8vh), rgba(140, 146, 150, .28), transparent 70%); }
+
+/* the title block (placed by page.js) */
+.card-title, .card-by, .card-year { position: fixed; white-space: nowrap; text-transform: uppercase; font-weight: 300;
+                                    left: -9999px; }
+.card-title { color: rgba(255, 255, 255, .9); }
+.card-by, .card-year { color: var(--ink-dim); }
+.card-title span { opacity: .3; transition: opacity .6s ease; }
+.card-title span.lit { opacity: 1; animation: wake 1.1s ease-out; }
+@keyframes wake { 0% { -webkit-text-stroke: .9px var(--ink); } 100% { -webkit-text-stroke: 0 transparent; } }
+
+/* the loading line runs through the middle of the title; each letter wakes as it passes */
+.line { position: fixed; left: 0; right: 0; top: var(--through); height: 1px; background: rgba(255, 255, 255, .2); }
+.line i { display: block; height: 100%; width: 0; background: var(--ink); transition: width .3s linear; }
+.line b { position: absolute; right: 24px; bottom: 10px; font-weight: 300; font-size: 11px; letter-spacing: .3em;
+          color: var(--ink-dim); font-variant-numeric: tabular-nums; transition: opacity .6s ease; }
+.ready .line { opacity: 0; transition-delay: .5s; }   /* loaded: the line has done its work */
+.ready .line b { opacity: 0; }
+
+.enter { position: fixed; left: 0; right: 0; top: 64vh; text-align: center;
+         font-size: clamp(12px, 1.6vh, 16px); letter-spacing: .5em; padding-left: .5em; text-transform: uppercase;
+         opacity: 0; pointer-events: none; }
+.ready .enter { opacity: 1; animation: dilate 3.3s ease-in-out infinite; }
+.ready { cursor: pointer; }
+/* echoes the game's Face Dilate pulse: the letters thicken and thin */
+@keyframes dilate { 0%, 100% { -webkit-text-stroke: 0 transparent; opacity: .7; }
+                    50% { -webkit-text-stroke: .7px var(--ink); opacity: 1; } }
+
+.notes { position: fixed; left: 0; right: 0; bottom: 34px; text-align: center; font-size: 11px;
+         letter-spacing: .32em; padding-left: .32em; text-transform: uppercase; color: var(--ink-dim); }
+
+/* phone notice / errors, under the title (errors stay visible over the game too) */
+.notice { position: fixed; left: 50%; top: 62vh; transform: translateX(-50%); width: min(560px, calc(100% - 32px));
+          text-align: center; opacity: 0; pointer-events: none; }
+.notice p { font-size: 12px; letter-spacing: .28em; line-height: 2.1; text-transform: uppercase; margin: 0 0 22px; text-wrap: balance; }
+.notice a { color: var(--ink-dim); font-size: 11px; letter-spacing: .3em; text-transform: uppercase; }
+body.noticed .notice { opacity: 1; visibility: visible; pointer-events: auto; z-index: 3; }
+.entered.noticed .notice { background: rgba(96, 102, 106, .6); padding: 18px 16px 4px; border-radius: 10px; }
+.noticed .line, .noticed .enter, .noticed .notes { opacity: 0; }
+.noticed .card-title span { opacity: 1; animation: none; }
+
+/* entered: the plate dissolves into the live title view */
+.entered .plate, .entered .card-title, .entered .card-by, .entered .card-year, .entered .line,
+.entered .enter, .entered .notes, .entered .notice {
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity var(--dissolve) ease, visibility 0s linear var(--dissolve);
+}
+.entered { cursor: default; }
+
+/* the visitor let go of the mouse while the game still wants it */
+.resume { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(120, 126, 128, .35);
+          -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); opacity: 0; visibility: hidden; cursor: pointer;
+          transition: opacity .6s ease, visibility 0s linear .6s; }
+.resume > div { text-align: center; }
+.resume-go { display: block; font-size: 14px; letter-spacing: .5em; padding-left: .5em; text-transform: uppercase;
+             animation: dilate 3.3s ease-in-out infinite; }
+.resume-back { display: inline-block; margin-top: 22px; padding: 6px 4px 6px calc(4px + .4em); color: var(--ink-dim);
+               font-size: 11px; letter-spacing: .4em; text-transform: uppercase; text-decoration: none;
+               border-bottom: 1px solid transparent; transition: color .3s ease, border-color .3s ease; }
+.resume-back:hover { color: var(--ink); border-bottom-color: rgba(255, 255, 255, .6); }
+.sailing-only, .restart-only { display: none; }
+.veil-sailing .sailing-only, .veil-restart .restart-only { display: inline-block; }
+.veil-sailing .intro-only, .veil-restart .intro-only { display: none; }
+.veiled .resume { opacity: 1; visibility: visible; transition: opacity .6s ease, visibility 0s; }
+
+/* fullscreen (icon A): corner marks and the word, always shown while there's a cursor. A soft shade
+   keeps the white legible on the bright sky up there. */
+.corner { position: fixed; top: 22px; right: 22px; z-index: 2; display: flex; align-items: center; gap: 12px;
+          background: none; border: 0; padding: 6px; cursor: pointer; color: var(--ink); font: inherit;
+          filter: drop-shadow(0 0 6px rgba(70, 76, 80, .45)); transition: opacity .6s ease; }
+.corner span { font-size: 11px; letter-spacing: .32em; text-transform: uppercase; opacity: .9;
+               transition: opacity .3s ease; }
+.corner svg { width: 18px; height: 18px; display: block; opacity: .9; transition: opacity .3s ease; }
+.corner:hover span, .corner:hover svg, .corner:focus-visible span { opacity: 1; }
+.corner .exit-fs, .fullscreen .corner .enter-fs { display: none; }
+.fullscreen .corner .exit-fs { display: block; }
+.entered:not(.free) .corner { opacity: 0; pointer-events: none; }
+
+.noscript { position: fixed; left: 0; right: 0; top: 62vh; text-align: center; font-size: 12px; letter-spacing: .28em;
+            text-transform: uppercase; }
+@media (max-width: 600px) { .notes { bottom: 24px; letter-spacing: .2em; } }
